@@ -1,0 +1,5 @@
+f = open("fft.txt")
+fftlist = f.readlines()
+print "The average: %f" % sum(fftlist)/len(fftlist)
+print "The max: %f" % max(fftlist)
+print "The min: %f" % min (fftlist)
