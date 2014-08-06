@@ -8,12 +8,17 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <vector>
+
 using namespace std;
 cufftReal* readData(long* sampleLength);
 int getIndex(int freq);
 
 int main()
 {
+	int UPPER_LIMIT = 0;
+	int LOWER_LIMIT = -1;
+
 	long sampleLength; //Read the length of the sample
 	int deltaT = 1; //timescale
 	cudaError_t cudaStatus;
@@ -45,7 +50,6 @@ int main()
 		return cudaStatus;
     }
 
-
 	//The actual transform
 	cufftHandle plan;
 	cufftPlan1d(&plan, sampleLength, CUFFT_R2C, 1);
@@ -57,14 +61,21 @@ int main()
         fprintf(stderr, "fftData Memcpy failed\n");
 		return cudaStatus;
     }
-	
-	//Spectral Reduction
 
+	vector<float> magVector;
+	//Spectral Reduction -- add a dimension???
+	int freq = 1;
+	for (int i = 0; i < sampleLength; i++)
+	{
+		magVector.push_back(log(fftData[i].x));
+		freq += (int) (log10(i) * log10(i));
+	}
 
+	//Grab highest magnitudes
 	for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT-1; freq++)
 	{
 		//magnitude.get()
-		double magnitude = log(abs(fftData[i].x + 1));
+		double magnitude = log(abs(fftData[freq].x + 1));
 
 		//????
 		int index = getIndex(freq);
@@ -75,6 +86,7 @@ int main()
 			highscores[index] = magnitude;
 			recordPoints[index] = freq;
 		}
+
 	}
 	//Hashing
 
