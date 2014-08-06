@@ -43,6 +43,7 @@ class
 		int writeData(FILE *f); // write out to ???
 		void reset(); // reset back to original state
 		void analyze(); //FFT and whatnot
+
 		
 	public:
 		WavBot();
@@ -80,7 +81,8 @@ int WavBot::
 {
 	stage = reading;
 	//Open the File
-	try {
+	try
+	{
 		f = fopen(WavFileName.c_str(), "rb");
 	}
 	catch(exception &e)

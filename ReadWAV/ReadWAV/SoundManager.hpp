@@ -97,7 +97,4 @@ void SoundFactory::
 	} // Parallel
 }
 
-
-
-
 #endif

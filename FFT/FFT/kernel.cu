@@ -5,10 +5,12 @@
 #include <cufft.h>
 #include "byteStructure.hpp"
 
+#include <cmath>
 #include <iostream>
 #include <fstream>
 using namespace std;
 cufftReal* readData(long* sampleLength);
+int getIndex(int freq);
 
 int main()
 {
@@ -56,26 +58,27 @@ int main()
 		return cudaStatus;
     }
 	
-	cout << "WAV: ";
-	for (int i = 0; i < 20; i++)
+	//Spectral Reduction
+
+
+	for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT-1; freq++)
 	{
-		cout << wavData[i] << " ";
+		//magnitude.get()
+		double magnitude = log(abs(fftData[i].x + 1));
+
+		//????
+		int index = getIndex(freq);
+
+		//we only want the highest magnitude
+		if (magnitude > highscores[index]) //high scores needs to be float[5]
+		{
+			highscores[index] = magnitude;
+			recordPoints[index] = freq;
+		}
 	}
-
-	//This should be written out to be analyzed properly...
-	ofstream fout("fft.txt", ofstream::out | ofstream::binary);
-
-	cout << endl << "FFT: ";
-	for (int j = 0; j < 20; j++)
-	{
-		//cout << fftData[j].x << " ";
-		fout << fftData[j].x << endl;
-	}
-	cout << endl;
-	cout << "\a" << endl;
+	//Hashing
 
 
-	fout.close();
 	//Housekeeping
 	delete wavData;
 	delete fftData;
@@ -89,6 +92,18 @@ int main()
 	system("PAUSE");
 	return 0;
 }
+
+
+int getIndex(int freq)
+{
+	int RANGE[] = {40, 80, 120, 180, UPPER_LIMIT+1};
+	int i = 0; 
+	while(RANGE[i] < freq) 
+	{
+		i++;
+	}
+	return i;
+};
 
 cufftReal* readData(long* sampleLength)
 {
