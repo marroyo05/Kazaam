@@ -13,115 +13,109 @@
 #define LOWER_LIMIT 40
 #define UPPER_LIMIT 300
 
-using namespace std;
-cufftReal* readData(long* sampleLength);
-int getIndex(int freq);
+#define CHUNK_SIZE 2048
 
-string hash (cufftComplex *fft, long sampleLength)
-{
-	for (int t = 0; t < sampleLength; t++)
-	{
-		for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT - 1; freq++)
-		{
-			double mag = log(fft[t]
-			
- 
-		}
-	}
- 
-}
+using namespace std;
+long* readData(long* sampleLength);
+int getIndex(int freq);
 
 int main()
 {
-	int UPPER_LIMIT = 0;
-	int LOWER_LIMIT = -1;
 
 	long sampleLength; //Read the length of the sample
-	int deltaT = 1; //timescale
 	cudaError_t cudaStatus;
 
-	//Host Memory
-	cufftReal *wavData = readData(&sampleLength);
-	cufftComplex *fftData = new cufftComplex[sampleLength];
 
-	//Device Memory
-	cufftReal *d_wavData;
-	cufftComplex *d_fftData;
+	//audio = new long [sampleLength + (nextLargestTwo - sampleLength)]
 
+	//Load wav file into memory
+	long *audio = readData(&sampleLength);
+	int amountPossible = sampleLength / CHUNK_SIZE;
 
-	cudaStatus = cudaMalloc(&d_wavData, sampleLength * sizeof(cufftReal));
-	 if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "d_wav malloc failed");
-    }
+	//Host memory
+	cufftComplex **wavData = new cufftComplex* [amountPossible];
+	cufftComplex **fftData = new cufftComplex* [amountPossible];
 
-	 cudaStatus = cudaMalloc(&d_fftData, (sampleLength) * sizeof(cufftComplex));
-	 if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "d_fft malloc failed");
-		return cudaStatus;
-    }
-
-	//Copy over wav data
-	 cudaStatus = cudaMemcpy(d_wavData, wavData, sampleLength * sizeof(cufftReal), cudaMemcpyHostToDevice);
-	if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "d_wavData Memcpy failed");
-		return cudaStatus;
-    }
-
-	//The actual transform
-	cufftHandle plan;
-	cufftPlan1d(&plan, sampleLength, CUFFT_R2C, 1);
-	cufftExecR2C(plan, (cufftReal* )d_wavData, (cufftComplex*) d_fftData);
-
-	//Copy fft data back
-	cudaStatus = cudaMemcpy(fftData, d_fftData, sampleLength * sizeof(cufftComplex), cudaMemcpyDeviceToHost);
-	if (cudaStatus != cudaSuccess) {
-        fprintf(stderr, "fftData Memcpy failed\n");
-		return cudaStatus;
-    }
-
-	vector<float> magVector;
-	//Spectral Reduction -- add a dimension???
-	int freq = 1;
-	for (int i = 0; i < sampleLength; i++)
+	//Creating Complex numbers from our readings
+	for (int times = 0; times < amountPossible; times++)
 	{
-		magVector.push_back(log(fftData[i].x));
-		freq += (int) (log10(i) * log10(i));
+		cufftComplex *complex = new cufftComplex[CHUNK_SIZE];
+		fftData[times] = new cufftComplex[CHUNK_SIZE];
+		for (int i = 0; i < CHUNK_SIZE; i++)
+		{
+			complex[i].x = audio[times * CHUNK_SIZE + i];
+			complex[i].y = 0;
+		}
+		wavData[times] = complex;
 	}
 
-	//Grab highest magnitudes
-	for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT-1; freq++)
+	//FFT
+	for (int i = 0; i < amountPossible; i++)
 	{
-		//magnitude.get()
-		double magnitude = log(abs(fftData[freq].x + 1));
+		system("CLS");
+		cout << (float)i / (float)amountPossible << "% Complete" << endl;
+		cufftComplex *d_wavData;
+		cufftComplex *d_fftData;
 
-		//????
-		int index = getIndex(freq);
-
-		//we only want the highest magnitude
-		if (magnitude > highscores[index]) //high scores needs to be float[5]
-		{
-			highscores[index] = magnitude;
-			recordPoints[index] = freq;
+		cudaStatus = cudaMalloc(&d_wavData, CHUNK_SIZE  * sizeof(cufftComplex));
+		 if (cudaStatus != cudaSuccess) {
+			fprintf(stderr, "d_wav malloc failed");
+			return cudaStatus;
 		}
 
-	}
-	//Hashing
+		 cudaStatus = cudaMalloc(&d_fftData, CHUNK_SIZE * sizeof(cufftComplex));
+		 if (cudaStatus != cudaSuccess) {
+			fprintf(stderr, "d_fft malloc failed");
+			return cudaStatus;
+		}
 
+		//Copy over wav data
+		 cudaStatus = cudaMemcpy(d_wavData, wavData[i], CHUNK_SIZE * sizeof(cuComplex), cudaMemcpyHostToDevice);
+		if (cudaStatus != cudaSuccess) {
+			fprintf(stderr, "d_wavData Memcpy failed");
+			return cudaStatus;
+		}
+
+		//The actual transform
+		cufftHandle plan;
+		//X is sample length, Y is human hearing
+		cufftPlan1d(&plan, sampleLength, CUFFT_R2C, 1);
+		cufftExecC2C(plan, (cufftComplex* )d_wavData, (cufftComplex*) d_fftData, 1);
+
+		//Copy fft data back
+		cudaStatus = cudaMemcpy(fftData[i], d_fftData, CHUNK_SIZE * sizeof(cufftComplex), cudaMemcpyDeviceToHost);
+		if (cudaStatus != cudaSuccess) {
+			fprintf(stderr, "fftData Memcpy failed\n");
+			return cudaStatus;
+		}
+
+		
+		cudaFree(d_wavData);
+		cudaFree(d_fftData);
+
+		cufftDestroy(plan);
+	}
+	cout << "FFT Complete." << endl;
 
 	//Housekeeping
 	delete wavData;
 	delete fftData;
 
-	cudaFree(d_wavData);
-	cudaFree(d_fftData);
-
-	cufftDestroy(plan);
 	cudaDeviceReset();
 
 	system("PAUSE");
 	return 0;
 }
 
+long powerOfTwo(long input)
+{
+	//Returns a power of two greater than input.
+	a = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 
+		1024, 2048, 4096, 8192, 16384, 32768, 65536, 
+		131072, 262144, 524288, 1048576, 2097152, 4194304,
+		8388608, 16777216, 33554432, 67108864, 134217728, 268435456,
+		536870912, 1073741824];
+}
 
 int getIndex(int freq)
 {
@@ -134,7 +128,7 @@ int getIndex(int freq)
 	return i;
 };
 
-cufftReal* readData(long* sampleLength)
+long* readData(long* sampleLength)
 {
 	//Open the File
 	FILE *f = fopen("test.wav", "rb");
@@ -154,7 +148,7 @@ cufftReal* readData(long* sampleLength)
 	*sampleLength = size;
 	int index = 0;
 
-	cufftReal* wavData = new cufftReal[size];
+	long* wavData = new long[size];
    /*The data subchunk is arranged with interleaved channels
 	* [channel0][channel1][channel0][channel1]
 	*  short	 short	   short	 short
