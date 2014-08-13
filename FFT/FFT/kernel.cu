@@ -10,9 +10,26 @@
 #include <fstream>
 #include <vector>
 
+#define LOWER_LIMIT 40
+#define UPPER_LIMIT 300
+
 using namespace std;
 cufftReal* readData(long* sampleLength);
 int getIndex(int freq);
+
+string hash (cufftComplex *fft, long sampleLength)
+{
+	for (int t = 0; t < sampleLength; t++)
+	{
+		for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT - 1; freq++)
+		{
+			double mag = log(fft[t]
+			
+ 
+		}
+	}
+ 
+}
 
 int main()
 {
