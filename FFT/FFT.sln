@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FFT", "FFT\FFT.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReadWAV", "..\ReadWAV\ReadWAV\ReadWAV.vcxproj", "{5C465FE6-B662-4D21-A1CB-1548CB962F85}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MP3Reader", "MP3Reader\MP3Reader.vcxproj", "{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Mixed Platforms = Debug|Mixed Platforms
@@ -65,6 +67,26 @@ Global
 		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Win2008PlusRelease|Win32.ActiveCfg = Release|Win32
 		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Win2008PlusRelease|Win32.Build.0 = Release|Win32
 		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Win2008PlusRelease|x64.ActiveCfg = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Debug|Win32.ActiveCfg = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Debug|Win32.Build.0 = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Debug|x64.ActiveCfg = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Release|Win32.ActiveCfg = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Release|Win32.Build.0 = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Release|x64.ActiveCfg = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusDebug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusDebug|Mixed Platforms.Build.0 = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusDebug|Win32.ActiveCfg = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusDebug|Win32.Build.0 = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusDebug|x64.ActiveCfg = Debug|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusRelease|Mixed Platforms.ActiveCfg = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusRelease|Mixed Platforms.Build.0 = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusRelease|Win32.ActiveCfg = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusRelease|Win32.Build.0 = Release|Win32
+		{88742614-1CF8-4EE3-BE13-4C6BC1E4AB66}.Win2008PlusRelease|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
