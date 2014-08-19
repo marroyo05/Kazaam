@@ -65,7 +65,7 @@ int main()
 			fprintf(stderr, "d_fft malloc failed");
 			return cudaStatus;
 		}
-
+		     
 	//FFT
 	for (int i = 0; i < amountPossible; i++)
 	{
