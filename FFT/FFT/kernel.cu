@@ -17,11 +17,12 @@
 
 using namespace std;
 long* readData(long* sampleLength);
+long powerOfTwo(long input);
 int getIndex(int freq);
+
 
 int main()
 {
-
 	long sampleLength; //Read the length of the sample
 	cudaError_t cudaStatus;
 
@@ -51,43 +52,39 @@ int main()
 
 	//The actual transform
 	cufftHandle plan;
-	cufftPlan1d(&plan, sampleLength, CUFFT_R2C, 1);
+	cufftPlan1d(&plan, CHUNK_SIZE, CUFFT_C2C, 1);
 
-		     
 	//FFT
 	for (int i = 0; i < numChunks; i++)
 	{
-		
-
-		
 		cudaStatus = cudaMalloc(&d_wavData, CHUNK_SIZE  * sizeof(cufftComplex));
-		 if (cudaStatus != cudaSuccess) {
+		if (cudaStatus != cudaSuccess) {
 			fprintf(stderr, "d_wav malloc failed");
 			return cudaStatus;
 		}
 
-		 cudaStatus = cudaMalloc(&d_fftData, CHUNK_SIZE * sizeof(cufftComplex));
-		 if (cudaStatus != cudaSuccess) {
+		cudaStatus = cudaMalloc(&d_fftData, CHUNK_SIZE * sizeof(cufftComplex));
+		if (cudaStatus != cudaSuccess) {
 			fprintf(stderr, "d_fft malloc failed");
 			return cudaStatus;
 		}
 
 		//Copy over wav data
-		 cudaStatus = cudaMemcpy(d_wavData, wavData[i], CHUNK_SIZE * sizeof(cuComplex), cudaMemcpyHostToDevice);
+		cudaStatus = cudaMemcpy(d_wavData, wavData[i], CHUNK_SIZE * sizeof(cufftComplex), cudaMemcpyHostToDevice);
 		if (cudaStatus != cudaSuccess) {
 			fprintf(stderr, "d_wavData Memcpy failed");
 			return cudaStatus;
 		}
 
-		cufftExecC2C(plan, (cufftComplex* )d_wavData, (cufftComplex*) d_fftData, 1);
+		cufftExecC2C(plan, (cufftComplex*)d_wavData, (cufftComplex*) d_fftData, 1);
 
 		//Copy fft data back
 		cudaStatus = cudaMemcpy(fftData[i], d_fftData, CHUNK_SIZE * sizeof(cufftComplex), cudaMemcpyDeviceToHost);
 		if (cudaStatus != cudaSuccess) {
 			fprintf(stderr, "fftData Memcpy failed\n");
+			system("PAUSE");
 			return cudaStatus;
 		}
-
 	}
 	
 	delete wavData;
@@ -114,7 +111,7 @@ int main()
 	{
 		for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT - 1; freq ++)
 		{
-			double magnitude = log10(abs(fftData[t][freq].x)) + 1;
+			double magnitude = log(abs(fftData[t][freq].x)) + 1;
 
 			int index = getIndex(freq);
 
@@ -122,11 +119,10 @@ int main()
 			{
 				highScores[t][index] = magnitude;
 			}
-
-
 		}
 	}
-	
+
+	cout << "\a" << endl;
 	//Display to test things
 	for (int i = 0; i < 5; i++)
 	{
@@ -137,7 +133,6 @@ int main()
 		cout << endl;
 	}
 	
-
 	//Housekeeping
 	delete fftData;
 
