@@ -27,14 +27,14 @@ int main()
 
 	//Load wav file into memory
 	long *audio = readData(&sampleLength);
-	int amountPossible = sampleLength / CHUNK_SIZE;
+	int numChunks = sampleLength / CHUNK_SIZE;
 
 	//Host memory
-	cufftComplex **wavData = new cufftComplex* [amountPossible];
-	cufftComplex **fftData = new cufftComplex* [amountPossible];
+	cufftComplex **wavData = new cufftComplex* [numChunks];
+	cufftComplex **fftData = new cufftComplex* [numChunks];
 
 	//Creating Complex numbers from our readings
-	for (int times = 0; times < amountPossible; times++)
+	for (int times = 0; times < numChunks; times++)
 	{
 		cufftComplex *complex = new cufftComplex[CHUNK_SIZE];
 		fftData[times] = new cufftComplex[CHUNK_SIZE];
@@ -51,10 +51,16 @@ int main()
 
 	//The actual transform
 	cufftHandle plan;
-	//X is sample length, Y is human hearing
 	cufftPlan1d(&plan, sampleLength, CUFFT_R2C, 1);
 
-	cudaStatus = cudaMalloc(&d_wavData, CHUNK_SIZE  * sizeof(cufftComplex));
+		     
+	//FFT
+	for (int i = 0; i < numChunks; i++)
+	{
+		
+
+		
+		cudaStatus = cudaMalloc(&d_wavData, CHUNK_SIZE  * sizeof(cufftComplex));
 		 if (cudaStatus != cudaSuccess) {
 			fprintf(stderr, "d_wav malloc failed");
 			return cudaStatus;
@@ -65,11 +71,7 @@ int main()
 			fprintf(stderr, "d_fft malloc failed");
 			return cudaStatus;
 		}
-		     
-	//FFT
-	for (int i = 0; i < amountPossible; i++)
-	{
-		
+
 		//Copy over wav data
 		 cudaStatus = cudaMemcpy(d_wavData, wavData[i], CHUNK_SIZE * sizeof(cuComplex), cudaMemcpyHostToDevice);
 		if (cudaStatus != cudaSuccess) {
@@ -87,46 +89,57 @@ int main()
 		}
 
 	}
-
+	
+	delete wavData;
 	cudaFree(d_wavData);
 	cudaFree(d_fftData);
 	cufftDestroy(plan);
+	cudaDeviceReset();
 
 	cout << "FFT Complete." << endl;
 
-	//Scale the data down
-	for (int i = 0; i < amountPossible; i++)
+	double **highScores = new double * [numChunks];
+	for (int i = 0; i < numChunks; i ++)
 	{
-		int freq = 1;
-		for (int line = 1; line < CHUNK_SIZE; line ++)
+		highScores[i] = new double[5];
+		for (int j = 0; j < 5; j++)
 		{
-			double magnitude = log(abs(fftData[i][freq].x)) + 1;
+			highScores[i][j] = 0;
+		}
+		
+	}
 
-			if ((log10(line) * log10(line)) > 1)
+	//Scale the data down
+	for (int t = 0; t < numChunks; t++)
+	{
+		for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT - 1; freq ++)
+		{
+			double magnitude = log10(abs(fftData[t][freq].x)) + 1;
+
+			int index = getIndex(freq);
+
+			if (magnitude > highScores[t][index])
 			{
-				freq += (int) (log10(line) * log10(line));
+				highScores[t][index] = magnitude;
 			}
-			else
-			{
-				freq++;
-			}
+
+
 		}
 	}
 	
-	
-
-	for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT - 1; freq++)
+	//Display to test things
+	for (int i = 0; i < 5; i++)
 	{
-		double mag = log (abs(fftData[freq].x) + 1);
-
+		for (int j = 0; j < 5; j++)
+		{
+			cout << highScores[i][j] << " ";
+		}
+		cout << endl;
 	}
 	
 
 	//Housekeeping
-	delete wavData;
 	delete fftData;
-
-	cudaDeviceReset();
 
 	system("PAUSE");
 	return 0;
