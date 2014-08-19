@@ -4,10 +4,12 @@
 
 #include <cufft.h>
 #include "byteStructure.hpp"
+#include "DataPoint.h"
 
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <unordered_map>
 #include <vector>
 
 #define LOWER_LIMIT 40
@@ -95,6 +97,7 @@ int main()
 
 	cout << "FFT Complete." << endl;
 
+	//Create an array of hash points
 	double **highScores = new double * [numChunks];
 	for (int i = 0; i < numChunks; i ++)
 	{
@@ -121,22 +124,30 @@ int main()
 			}
 		}
 	}
+	cout << "Reduction Complete." << endl;
 
-	cout << "\a" << endl;
-	//Display to test things
-	for (int i = 0; i < 5; i++)
+	//Store the matches
+	unordered_map<string, DataPoint> storage;
+	int fuzz = 2; // fuzziness
+	for (int t = 0; t < numChunks; t++)
 	{
+		string hash = "";
 		for (int j = 0; j < 5; j++)
 		{
-			cout << highScores[i][j] << " ";
+			//concat our hash with a fuzziness
+			hash += to_string((highScores[t][j] - ((int)highScores[t][j] % fuzz)));
 		}
-		cout << endl;
+		DataPoint d(t, 0); //Create a data poin
+		pair<string, DataPoint> point (hash, d); //Pair it with the hash we calculated
+		storage.insert(point);
 	}
+
 	
+	system("PAUSE");
 	//Housekeeping
 	delete fftData;
+	delete highScores;
 
-	system("PAUSE");
 	return 0;
 }
 
@@ -158,6 +169,7 @@ long powerOfTwo(long input)
 	return twos[i];
 }
 
+//This doesn't do it's job right.
 int getIndex(int freq)
 {
 	int RANGE[] = {40, 80, 120, 180, UPPER_LIMIT+1};
