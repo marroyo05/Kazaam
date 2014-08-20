@@ -79,7 +79,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="byteStructure.hpp" />
     <ClInclude Include="SoundManager.hpp" />
     <ClInclude Include="WavBot.hpp" />
   </ItemGroup>

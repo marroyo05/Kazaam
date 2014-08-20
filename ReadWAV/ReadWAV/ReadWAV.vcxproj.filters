@@ -21,9 +21,6 @@
     <ClInclude Include="WavBot.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="byteStructure.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SoundManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>

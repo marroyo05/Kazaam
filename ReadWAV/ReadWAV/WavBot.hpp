@@ -2,7 +2,6 @@
 #define __WAVBOT
 
 #include "byteStructure.hpp"
-
 #include <cstdio>
 #include <exception>
 #include <iostream>
@@ -134,10 +133,44 @@ void WavBot::
 void WavBot::
 	analyze()
 {
-	//Implement this shit
-	//We's gon need FFT, peak levels, and some other shit.
-	//BPM???
-	cout << "This shit don't do anything yet." << endl;
+	
 }
 
 #endif
+
+
+
+//Read Shorts from Chars
+struct ShortFromChar
+{
+	byte a, b;
+};
+
+//Read Longs from Chars
+struct LongFromChar
+{
+	byte a, b, c, d;
+};
+
+//Little Endian only
+unsigned long charToLong(byte a, byte b, byte c, byte d)
+{
+	LongFromChar val;
+	val.a = a;
+	val.b = b;
+	val.c = c;
+	val.d = d;
+	unsigned long *l = (unsigned long*) &val;
+	
+	return *l;
+}
+//Little Endian only
+unsigned short charToShort(byte a, byte b)
+{
+	ShortFromChar val;
+	val.a = a;
+	val.b = b;
+	unsigned short *s = (unsigned short*) &val;
+
+	return *s;
+}
