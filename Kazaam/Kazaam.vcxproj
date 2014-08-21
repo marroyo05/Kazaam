@@ -161,7 +161,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="byteStructure.hpp" />
     <ClInclude Include="fmodRecord.h" />
     <ClInclude Include="AudioThread.hpp" />
-    <ClInclude Include="SoundManager.hpp" />
+    <ClInclude Include="AudioManager.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\FFT\FFT\DataPoint.cpp" />

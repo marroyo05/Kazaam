@@ -14,7 +14,7 @@
 #define NUM_OBJECTS 16 //The number of objects should = simultaneous threads
 
 class 
-	SoundFactory
+	AudioManager
 {
 	private:
 		AudioThread* pool;
@@ -23,24 +23,24 @@ class
 		void readFileList();
 
 	public:
-		SoundFactory(); //Creates default number of soundbots
-		SoundFactory(int numObjects); //Creates custom number of soundbots
-		~SoundFactory();
+		AudioManager(); //Creates default number of soundbots
+		AudioManager(int numObjects); //Creates custom number of soundbots
+		~AudioManager();
 		void startEngine();
 		void saveMap(unordered_map<string, DataPoint> um);
-		unordered_map<string, DataPoint>SoundFactory::LoadMap();
+		unordered_map<string, DataPoint>AudioManager::LoadMap();
 };
 
-SoundFactory::
-	SoundFactory()
+AudioManager::
+	AudioManager()
 {
 	pool = new AudioThread[NUM_OBJECTS];
 	readFileList(); //Replace this with Miguel's directory to string[] code
 	
 }
 
-SoundFactory::
-	~SoundFactory()
+AudioManager::
+	~AudioManager()
 {
 	for (int i = 0; i < NUM_OBJECTS; i++)
 	{
@@ -49,7 +49,7 @@ SoundFactory::
 	//Shut down the output
 }
 
-void SoundFactory::
+void AudioManager::
 	startEngine()
 {
 		int check = 0;  // An int to check for errors
@@ -97,7 +97,7 @@ void SoundFactory::
 }
 
 
-unordered_map<string, DataPoint>SoundFactory::LoadMap()
+unordered_map<string, DataPoint>AudioManager::LoadMap()
 {
 	string CurrentLine;
 	unordered_map<string,DataPoint> um;
@@ -128,7 +128,7 @@ unordered_map<string, DataPoint>SoundFactory::LoadMap()
 }
  
  
-void SoundFactory::saveMap(unordered_map<string, DataPoint> um)
+void AudioManager::saveMap(unordered_map<string, DataPoint> um)
 {
 	ofstream file ("data.txt");
 	if (file.is_open())
