@@ -1,5 +1,5 @@
-#ifndef __SOUNDFACTORY
-#define __SOUNDFACTORY
+#ifndef __AudioManager
+#define __AudioManager
 
 #include "AudioThread.hpp"
 
@@ -14,7 +14,7 @@
 #define NUM_OBJECTS 16 //The number of objects should = simultaneous threads
 
 class 
-	SoundFactory
+	AudioManager
 {
 	private:
 		AudioThread* pool;
@@ -23,22 +23,22 @@ class
 		void readFileList();
 
 	public:
-		SoundFactory(); //Creates default number of soundbots
-		SoundFactory(int numObjects); //Creates custom number of soundbots
-		~SoundFactory();
+		AudioManager(); //Creates default number of soundbots
+		AudioManager(int numObjects); //Creates custom number of soundbots
+		~AudioManager();
 		void startEngine();
 };
 
-SoundFactory::
-	SoundFactory()
+AudioManager::
+	AudioManager()
 {
 	pool = new AudioThread[NUM_OBJECTS];
 	readFileList(); //Replace this with Miguel's directory to string[] code
 	
 }
 
-SoundFactory::
-	~SoundFactory()
+AudioManager::
+	~AudioManager()
 {
 	for (int i = 0; i < NUM_OBJECTS; i++)
 	{
@@ -47,7 +47,7 @@ SoundFactory::
 	//Shut down the output
 }
 
-void SoundFactory::
+void AudioManager::
 	startEngine()
 {
 #pragma omp parallel

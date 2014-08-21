@@ -26,7 +26,7 @@ typedef
 class 
 	AudioThread
 {
-	friend class SoundFactory;
+	friend class AudioManager;
 
 	private:
 		FILE *f;
