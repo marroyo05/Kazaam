@@ -2,14 +2,8 @@
 
 #include "AudioThread.hpp"
 
-#include <deque>
+#include <queue>
 #include <sstream>
-#include <omp.h>
-
-   /*
-	*	TODO: We need to implement a write queue.  Callbacks would be useful
-	*	Thread this sumbitch
-	*/
 
 #define NUM_OBJECTS 16 //The number of objects should = simultaneous threads
 
@@ -18,24 +12,40 @@ class
 {
 	private:
 		AudioThread* pool;
-		deque<string> fileList;
-		FILE* outPut; //File? DB? ?? 
-		void readFileList();
+		boolean fileLoaded;
+		queue<string> fileList;
+		unordered_map<string, DataPoint> database;
+		queue<string> listFiles(string folder);
+		int numFiles;
+		vector<DataPoint> matches; 
 
 	public:
 		AudioManager(); //Creates default number of soundbots
-		AudioManager(int numObjects); //Creates custom number of soundbots
+		//AudioManager(int numObjects); //Creates custom number of soundbots
 		~AudioManager();
-		void startEngine();
+		DataPoint query(string hash); //Queries the hashmap, returns a datapoint
+		void fingerPrintAudioT();
+		void fingerPrintAudio();
 		void saveMap(unordered_map<string, DataPoint> um);
 		unordered_map<string, DataPoint>AudioManager::LoadMap();
+		int audioRecord();
 };
 
 AudioManager::
 	AudioManager()
 {
+	//Create a pool of AudioProcessors
 	pool = new AudioThread[NUM_OBJECTS];
-	readFileList(); //Replace this with Miguel's directory to string[] code
+	//Get Files
+	fileList = listFiles("C:/Users/Zach/Desktop/WaveData/");
+	numFiles = fileList.size();
+	//Assign Files to Processors
+	for (int i = 0; i < numFiles; i++)
+	{
+		pool[i].setFileName(fileList.front());
+		fileList.pop();
+	}
+	//database = LoadMap();
 	
 }
 
@@ -47,10 +57,24 @@ AudioManager::
 		this->pool[i].reset();
 	}
 	//Shut down the output
+	saveMap(database);
 }
 
 void AudioManager::
-	startEngine()
+	fingerPrintAudio()
+{
+	for (int i = 0; i < numFiles; i++)
+	{
+		/*
+		*Call Analyze and add to the hashmap.
+		*/
+
+	}
+
+}
+
+void AudioManager::
+	fingerPrintAudioT()
 {
 		int check = 0;  // An int to check for errors
 		while (!fileList.empty()) //Still stuff to process
@@ -60,9 +84,9 @@ void AudioManager::
 			   // Our control switch. Decides what each object should do next.
 				switch(this->pool[i].stage) //Which stage are we at??
 				{
-					case waitingForFile:
+					case waitingForFile:/*
 						this->pool[i].setFileName(fileList.front);
-						fileList.pop_front();
+						fileList.pop();*/
 						break;
 					case waitingOnRead:
 						check = this->pool[i].readData();
@@ -83,7 +107,7 @@ void AudioManager::
 						//This may cause a lock error...
 						break;
 					case waitingOnWrite:
-						this->pool[i].writeData(outPut);
+						//this->pool[i].writeData(outPut);
 						break;
 					case writing:
 						//Do nothing until the read is done.
@@ -96,8 +120,8 @@ void AudioManager::
 		} // File reader
 }
 
-
-unordered_map<string, DataPoint>AudioManager::LoadMap()
+unordered_map<string, DataPoint>AudioManager::
+	LoadMap()
 {
 	string CurrentLine;
 	unordered_map<string,DataPoint> um;
@@ -122,13 +146,13 @@ unordered_map<string, DataPoint>AudioManager::LoadMap()
 		myFile.close();	
 		cout << "File was opened";
 	}
-	else cout<< "Unable to open file";
+	else cout << "Unable to open file";
  
 	return um;
 }
  
- 
-void AudioManager::saveMap(unordered_map<string, DataPoint> um)
+void AudioManager::
+	saveMap(unordered_map<string, DataPoint> um)
 {
 	ofstream file ("data.txt");
 	if (file.is_open())
@@ -137,9 +161,55 @@ void AudioManager::saveMap(unordered_map<string, DataPoint> um)
 		for (auto itr = um.begin(); itr != um.end(); ++itr)
 		{
 				//write to file
-			file << itr->first<< " " << itr->second.toString() << endl;
+			//file << itr->first<< " " << itr->second. << endl;
 		}
 		file.close();
 	}
 	else cout << "Unable to open file";
+}
+
+DataPoint AudioManager::
+	query(string hash)
+{
+	unordered_map<string, DataPoint>::iterator match;
+	match = database.find(hash);
+	if (match == database.end()) //Nothing found
+	{
+		return DataPoint(-1, -1); //Return invalid match
+	}
+	else //Found something
+	{
+		return match->second; //Return our DataPoint
+	}
+}
+
+queue<string> AudioManager::
+	listFiles(string folder)
+{
+    queue<string> names;
+    char search_path[200];
+    sprintf(search_path, "%s*.*", folder.c_str());
+    WIN32_FIND_DATA fd; 
+    HANDLE hFind = ::FindFirstFile(search_path, &fd); 
+    if(hFind != INVALID_HANDLE_VALUE) 
+    { 
+        do 
+        { 
+            // read all (real) files in current folder
+            // , delete '!' read other 2 default folder . and ..
+            if(! (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ) 
+            {
+                names.push(fd.cFileName);
+            }
+        }while(::FindNextFile(hFind, &fd)); 
+        ::FindClose(hFind); 
+    } 
+    return names;
+}
+
+int AudioManager::
+	audioRecord()
+{
+	//Right now this drops a wav file.  It should fingerprint it first.
+	return recordMic();
 }

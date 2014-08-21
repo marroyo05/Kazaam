@@ -148,7 +148,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="FFT\FFT.sln" />
-    <None Include="KazaamUI.ui" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\FFT\FFT\kernel.cu">

@@ -1,5 +1,5 @@
-#ifndef __AudioManager
-#define __AudioManager
+#ifndef __Kazaam
+#define __Kazaam
 
 #include "AudioThread.hpp"
 
@@ -14,7 +14,7 @@
 #define NUM_OBJECTS 16 //The number of objects should = simultaneous threads
 
 class 
-	AudioManager
+	Kazaam
 {
 	private:
 		AudioThread* pool;
@@ -23,22 +23,22 @@ class
 		void readFileList();
 
 	public:
-		AudioManager(); //Creates default number of soundbots
-		AudioManager(int numObjects); //Creates custom number of soundbots
-		~AudioManager();
+		Kazaam(); //Creates default number of soundbots
+		Kazaam(int numObjects); //Creates custom number of soundbots
+		~Kazaam();
 		void startEngine();
 };
 
-AudioManager::
-	AudioManager()
+Kazaam::
+	Kazaam()
 {
 	pool = new AudioThread[NUM_OBJECTS];
 	readFileList(); //Replace this with Miguel's directory to string[] code
 	
 }
 
-AudioManager::
-	~AudioManager()
+Kazaam::
+	~Kazaam()
 {
 	for (int i = 0; i < NUM_OBJECTS; i++)
 	{
@@ -47,7 +47,7 @@ AudioManager::
 	//Shut down the output
 }
 
-void AudioManager::
+void Kazaam::
 	startEngine()
 {
 #pragma omp parallel

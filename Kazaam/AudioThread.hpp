@@ -141,8 +141,3 @@ void AudioThread::
 	unordered_map<string, DataPoint> um;
 }
 
-int AudioThread::
-	audioRecord()
-{
-	return recordMic();
-}

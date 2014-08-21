@@ -1,49 +1,59 @@
 #include "DataPoint.h"
 
-DataPoint::DataPoint(){};
+DataPoint::
+	DataPoint(){};
 
-DataPoint::DataPoint(int time, int id)
+DataPoint::
+	DataPoint(int time, int id)
 {
 	t = time;
 	songId = songId;
 };
 
-DataPoint::~DataPoint()
+DataPoint::
+	~DataPoint()
 {
 };
 
-string DataPoint::getHash()
+string DataPoint::
+	getHash()
 {
 	return hash;
 }
 
-int DataPoint::getID()
+int DataPoint::
+	getID()
 {
 	return songId;
 }
 
-int DataPoint::getT()
+int DataPoint::
+	getT()
 {
 	return t;
 }
 
-void DataPoint::setHash(string hash)
+void DataPoint::
+	setHash(string hash)
 {
 	hash = hash;
 }
 
-void DataPoint::setID(int id)
+void DataPoint::
+	setID(int id)
 {
 	songId = id;
 }
 
-void DataPoint::setT(int time)
+void DataPoint::
+	setT(int time)
 {
 	t = time;
 }
 
 
-string DataPoint::toString()
+string DataPoint::
+	toString()
 {
  
 	return to_string(songId) + " " + to_string(t);
