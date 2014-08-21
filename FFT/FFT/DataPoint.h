@@ -14,6 +14,7 @@ public:
 	void setHash(string hash);
 	void setID(int id);
 	void setT(int time);
+	string toString();
 private:
 	string hash;
 	int songId;

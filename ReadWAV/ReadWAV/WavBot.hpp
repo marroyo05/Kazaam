@@ -1,7 +1,9 @@
-#ifndef __WAVBOT
-#define __WAVBOT
+#ifndef __AudioThread
+#define __AudioThread
 
 #include "byteStructure.hpp"
+#include "fmodRecord.h"
+
 #include <cstdio>
 #include <exception>
 #include <iostream>
@@ -22,7 +24,7 @@ typedef
 } PoolStage; 
 
 class 
-	WavBot
+	AudioThread
 {
 	friend class SoundFactory;
 
@@ -42,15 +44,15 @@ class
 		int writeData(FILE *f); // write out to ???
 		void reset(); // reset back to original state
 		void analyze(); //FFT and whatnot
-
+		void record();
 		
 	public:
-		WavBot();
-		~WavBot();
+		AudioThread();
+		~AudioThread();
 };
 
-WavBot::
-	WavBot()
+AudioThread::
+	AudioThread()
 {
 	WavFileName = "";
 	dataPointer = 40; // The byte offset where data size is
@@ -60,22 +62,22 @@ WavBot::
 
 }
 
-WavBot::
-	~WavBot()
+AudioThread::
+	~AudioThread()
 {
 	//Make sure that our buffers are empty
 	channel0.clear();
 	channel1.clear();
 }
 
-void WavBot::
+void AudioThread::
 	setFileName(string fname)
 {
 	WavFileName = fname;
 	stage = waitingOnRead;
 }
 
-int WavBot::
+int AudioThread::
 	readData()
 {
 	stage = reading;
@@ -122,7 +124,7 @@ int WavBot::
 	return 1;
 }
 
-void WavBot::
+void AudioThread::
 	reset()
 {
 	WavFileName = ""; // Clear the file name
@@ -130,14 +132,19 @@ void WavBot::
 	stage = waitingForFile; //Reset the stage
 }
 
-void WavBot::
+void AudioThread::
 	analyze()
 {
 	
 }
 
-#endif
 
+void AudioThread::
+	record()
+{
+
+
+}
 
 
 //Read Shorts from Chars
@@ -174,3 +181,5 @@ unsigned short charToShort(byte a, byte b)
 
 	return *s;
 }
+
+#endif

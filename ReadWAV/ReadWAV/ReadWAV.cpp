@@ -1,8 +1,8 @@
-// WavBot.cpp : Defines the entry point for the console application.
+// AudioThread.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
-#include "WavBot.hpp"
+#include "AudioThread.hpp"
 
 int main()
 {

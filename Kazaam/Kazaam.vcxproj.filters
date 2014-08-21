@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\FFT\FFT\DataPoint.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Kazaam.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\FFT\FFT\DataPoint.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\FFT\FFT\fft.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="byteStructure.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="fmodRecord.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioThread.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.hpp">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="FFT\FFT.sln" />
+    <None Include="KazaamUI.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{4826c57b-14f6-49f9-8f68-4d3354e646e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{142cf944-b9f4-44a3-8e27-413d3fa78c73}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\FFT\FFT\kernel.cu">
+      <Filter>Source</Filter>
+    </CudaCompile>
+  </ItemGroup>
+</Project>

@@ -1,9 +1,9 @@
-#ifndef __SOUNDFACTORY
-#define __SOUNDFACTORY
+#pragma once
 
-#include "WavBot.hpp"
+#include "AudioThread.hpp"
 
 #include <deque>
+#include <sstream>
 #include <omp.h>
 
    /*
@@ -17,7 +17,7 @@ class
 	SoundFactory
 {
 	private:
-		WavBot* pool;
+		AudioThread* pool;
 		deque<string> fileList;
 		FILE* outPut; //File? DB? ?? 
 		void readFileList();
@@ -27,12 +27,14 @@ class
 		SoundFactory(int numObjects); //Creates custom number of soundbots
 		~SoundFactory();
 		void startEngine();
+		void saveMap(unordered_map<string, DataPoint> um);
+		unordered_map<string, DataPoint>SoundFactory::LoadMap();
 };
 
 SoundFactory::
 	SoundFactory()
 {
-	pool = new WavBot[NUM_OBJECTS];
+	pool = new AudioThread[NUM_OBJECTS];
 	readFileList(); //Replace this with Miguel's directory to string[] code
 	
 }
@@ -50,8 +52,6 @@ SoundFactory::
 void SoundFactory::
 	startEngine()
 {
-#pragma omp parallel
-	{
 		int check = 0;  // An int to check for errors
 		while (!fileList.empty()) //Still stuff to process
 		{
@@ -94,7 +94,52 @@ void SoundFactory::
 				} //Switchboard
 			} //Object pool loop
 		} // File reader
-	} // Parallel
 }
 
-#endif
+
+unordered_map<string, DataPoint>SoundFactory::LoadMap()
+{
+	string CurrentLine;
+	unordered_map<string,DataPoint> um;
+	ifstream myFile;
+	myFile.open("data.txt", ios::in);
+	if(myFile.is_open())
+	{
+		while(getline(myFile,CurrentLine)) 
+		{
+			vector < string> tokens;
+			istringstream iss (CurrentLine);
+			copy(istream_iterator<string>(iss), istream_iterator<string>(), back_inserter<vector<string>>(tokens));
+			string hash = tokens[0];
+			int songID = stoi(tokens[1]);
+			int t = stoi(tokens[2]);
+			DataPoint d;
+			d.setID(songID);
+			d.setT(t);
+ 
+			um.insert(make_pair(hash,d));
+		}
+		myFile.close();	
+		cout << "File was opened";
+	}
+	else cout<< "Unable to open file";
+ 
+	return um;
+}
+ 
+ 
+void SoundFactory::saveMap(unordered_map<string, DataPoint> um)
+{
+	ofstream file ("data.txt");
+	if (file.is_open())
+	{
+		//Iterate through map
+		for (auto itr = um.begin(); itr != um.end(); ++itr)
+		{
+				//write to file
+			file << itr->first<< " " << itr->second.toString() << endl;
+		}
+		file.close();
+	}
+	else cout << "Unable to open file";
+}

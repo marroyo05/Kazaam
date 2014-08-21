@@ -4,7 +4,10 @@
 #include "WavBot.hpp"
 
 #include <deque>
-#include <omp.h>
+#include <unordered_map>
+#include <fstream>
+#include <sstream>
+
 
    /*
 	*	TODO: We need to implement a write queue.  Callbacks would be useful
@@ -27,6 +30,7 @@ class
 		SoundFactory(int numObjects); //Creates custom number of soundbots
 		~SoundFactory();
 		void startEngine();
+
 };
 
 SoundFactory::
@@ -97,4 +101,52 @@ void SoundFactory::
 	} // Parallel
 }
 
+
+
+unordered_map<string, DataPoint> LoadMap()
+{
+	string CurrentLine;
+	unordered_map<string,DataPoint> um;
+	ifstream myFile;
+	myFile.open("data.txt", ios::in);
+	if(myFile.is_open())
+	{
+		while(getline(myFile,CurrentLine)) 
+		{
+			vector < string> tokens;
+			istringstream iss (CurrentLine);
+			copy(istream_iterator<string>(iss), istream_iterator<string>(), back_inserter<vector<string>>(tokens));
+			string hash = tokens[0];
+			int songID = stoi(tokens[1]);
+			int t = stoi(tokens[2]);
+			DataPoint d;
+			d.setID(songID);
+			d.setT(t);
+ 
+			um.insert(make_pair(hash,d));
+		}
+		myFile.close();	
+		cout << "File was opened";
+	}
+	else cout<< "Unable to open file";
+ 
+	return um;
+}
+ 
+ 
+void saveMap(unordered_map<string, DataPoint> um)
+{
+	ofstream file ("data.txt");
+	if (file.is_open())
+	{
+		//Iterate through map
+		for (auto itr = um.begin(); itr != um.end(); ++itr)
+		{
+				//write to file
+			file << itr->first<< " " << itr->second.toString() << endl;
+		}
+		file.close();
+	}
+	else cout << "Unable to open file";
+}
 #endif

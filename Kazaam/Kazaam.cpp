@@ -1,9 +1,16 @@
-#include "WavBot.hpp"
+#include "AudioThread.hpp"
 #include <iostream>
+
+#include <string>
+
 using namespace std;
 
-int main()
+int main(int argc, char **argv)
 {
-	cout << "PFFBT" << endl;
+	AudioThread at;
+	string fname = "test.wav";
+	at.setFileName(fname);
+	at.analyze();
+	
 	system("PAUSE");
 }

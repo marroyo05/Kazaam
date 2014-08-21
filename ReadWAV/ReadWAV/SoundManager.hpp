@@ -1,7 +1,7 @@
 #ifndef __SOUNDFACTORY
 #define __SOUNDFACTORY
 
-#include "WavBot.hpp"
+#include "AudioThread.hpp"
 
 #include <deque>
 #include <omp.h>
@@ -17,7 +17,7 @@ class
 	SoundFactory
 {
 	private:
-		WavBot* pool;
+		AudioThread* pool;
 		deque<string> fileList;
 		FILE* outPut; //File? DB? ?? 
 		void readFileList();
@@ -32,7 +32,7 @@ class
 SoundFactory::
 	SoundFactory()
 {
-	pool = new WavBot[NUM_OBJECTS];
+	pool = new AudioThread[NUM_OBJECTS];
 	readFileList(); //Replace this with Miguel's directory to string[] code
 	
 }
