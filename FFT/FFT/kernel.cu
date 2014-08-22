@@ -1,7 +1,7 @@
 //
 #include "fft.h"
 //
-unordered_map<string, DataPoint> fingerPrint(long *audio, long sampleLength)
+vector<string, DataPoint> fingerPrint(long *audio, long sampleLength)
 {
 	//long sampleLength; //Read the length of the sample
 	cudaError_t cudaStatus;
@@ -98,9 +98,11 @@ unordered_map<string, DataPoint> fingerPrint(long *audio, long sampleLength)
 		}
 	}
 	cout << "Reduction Complete." << endl;
+	
+
 
 	//Store the matches
-	unordered_map<string, DataPoint> storage;
+	vector<pair<string, DataPoint>> storage;
 	int fuzz = 2; // fuzziness
 	for (int t = 0; t < numChunks; t++)
 	{
@@ -112,7 +114,7 @@ unordered_map<string, DataPoint> fingerPrint(long *audio, long sampleLength)
 		}
 		DataPoint d(t, 0); //Create a data poin
 		pair<string, DataPoint> point (hash, d); //Pair it with the hash we calculated
-		storage.insert(point);
+		storage.push_back(point);
 	}
 
 	//Housekeeping
@@ -152,50 +154,13 @@ int getIndex(int freq)
 	return i;
 };
 
-//long* readData(long* sampleLength)
-//{
-//	//Open the File
-//	FILE *f = fopen("test.wav", "rb");
-//	
-//	long dataPointer = 40;
-//
-//	fseek(f, dataPointer, SEEK_SET); // Move the File pointer to data subchunk
-//
-//	//Read the size from the subchunk header
-//	LongFromChar val;
-//	byte a = fgetc(f);
-//	byte b = fgetc(f);
-//	byte c = fgetc(f);
-//	byte d = fgetc(f);
-//
-//	long size = charToLong(a,b,c,d);
-//	*sampleLength = size;
-//	int index = 0;
-//
-//	int difference = powerOfTwo(size) - size;
-//	long* wavData = new long[size + difference];
-//
-//   /*The data subchunk is arranged with interleaved channels
-//	* [channel0][channel1][channel0][channel1]
-//	*  short	 short	   short	 short
-//	*/
-//	while (dataPointer < size + 40)
-//	{
-//		a = fgetc(f);
-//		b = fgetc(f);
-//		c = fgetc(f);
-//		d = fgetc(f);
-//		wavData[index] = charToShort(a,b);
-//		dataPointer += 4; //Skip to the next block
-//		index ++;
-//	}
-//	while (dataPointer < (size + difference - 1))
-//	{
-//		wavData[index] = 0;
-//		dataPointer ++;
-//		index++;
-//	}
-//
-//	fclose(f);
-//	return wavData;
-//}
+unordered_map<string, DataPoint> ToMap(vector<pair<string,DataPoint>> data)
+{
+	unordered_map<string,DataPoint> storage;
+	for (int t = 0; t < data.size(); t++)
+	{
+		
+		storage.insert(data[t]);
+	}
+	return storage;
+}
