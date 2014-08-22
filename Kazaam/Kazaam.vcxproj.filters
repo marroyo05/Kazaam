@@ -24,13 +24,12 @@
     <ClInclude Include="AudioThread.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="SoundManager.hpp">
+    <ClInclude Include="AudioManager.hpp">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="FFT\FFT.sln" />
-    <None Include="KazaamUI.ui" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Headers">

@@ -7,6 +7,7 @@
 #include <cstdio>
 #include <exception>
 #include <iostream>
+#include <omp.h>
 #include <string>
 #include <time.h>
 #include <vector>
@@ -85,46 +86,49 @@ int AudioThread::
 {
 	stage = reading;
 	//Open the File
-	try
+
+	f = fopen(WavFileName.c_str(), "rb");
+	cout << errno << endl;
+		
+	if (f != NULL)
 	{
-		f = fopen(WavFileName.c_str(), "rb");
+		fseek(f, dataPointer, SEEK_SET); // Move the File pointer to data subchunk
+	
+	
+		//Read the size from the subchunk header
+		LongFromChar val;
+		byte a = fgetc(f);
+		byte b = fgetc(f);
+		byte c = fgetc(f);
+		byte d = fgetc(f);
+
+		long size = charToLong(a,b,c,d);
+
+	   /*The data subchunk is arranged with interleaved channels
+		* [channel0][channel1][channel0][channel1]
+		*  short	 short	   short	 short
+		*/
+		while (dataPointer < size + 40)
+		{
+			a = fgetc(f);
+			b = fgetc(f);
+			c = fgetc(f);
+			d = fgetc(f);
+			channel0.push_back(charToShort(a,b)); //Left channel
+			channel1.push_back(charToShort(c,d)); //Right channel
+			dataPointer += 4; //Skip to the next block
+		}
+
+		fclose(f);
+		dataPointer = 40; // Reset data pointer
+		stage = waitingOnFFT; // Move to the next section in the pool
+		return 1;
 	}
-	catch(exception &e)
+	else
 	{
-		cout << e.what() << endl;
-		return -1;
+		cout << "File not found." << endl;
+		return 0;
 	}
-
-	fseek(f, dataPointer, SEEK_SET); // Move the File pointer to data subchunk
-
-	//Read the size from the subchunk header
-	LongFromChar val;
-	byte a = fgetc(f);
-	byte b = fgetc(f);
-	byte c = fgetc(f);
-	byte d = fgetc(f);
-
-	long size = charToLong(a,b,c,d);
-
-   /*The data subchunk is arranged with interleaved channels
-	* [channel0][channel1][channel0][channel1]
-	*  short	 short	   short	 short
-	*/
-	while (dataPointer < size + 40)
-	{
-		a = fgetc(f);
-		b = fgetc(f);
-		c = fgetc(f);
-		d = fgetc(f);
-		channel0.push_back(charToShort(a,b)); //Left channel
-		channel1.push_back(charToShort(c,d)); //Right channel
-		dataPointer += 4; //Skip to the next block
-	}
-
-	fclose(f);
-	dataPointer = 40; // Reset data pointer
-	stage = waitingOnFFT; // Move to the next section in the pool
-	return 1;
 }
 
 void AudioThread::
@@ -138,11 +142,6 @@ void AudioThread::
 void AudioThread::
 	analyze()
 {
-	unordered_map<string, DataPoint> um;
+
 }
 
-int AudioThread::
-	audioRecord()
-{
-	return recordMic();
-}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Build started 8/21/2014 1:32:27 AM.
      1>Project "C:\Users\Mikey\Documents\GitHub\Kazaam\FFT\FFT\FFT.vcxproj" on node 2 (Clean target(s)).
      1>_PrepareForClean:
@@ -7,3 +8,20 @@
 Build succeeded.
 
 Time Elapsed 00:00:00.00
+=======
+﻿Build started 8/21/2014 4:53:31 PM.
+     1>Project "C:\Users\Zach\Documents\Visual Studio 2012\Projects\Kazaam\FFT\FFT\FFT.vcxproj" on node 3 (Rebuild target(s)).
+     1>PostBuildEvent:
+         echo copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin\cudart*.dll" "C:\Users\Zach\Documents\Visual Studio 2012\Projects\Kazaam\Debug\"
+         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin\cudart*.dll" "C:\Users\Zach\Documents\Visual Studio 2012\Projects\Kazaam\Debug\"
+         :VCEnd
+         copy "C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin\cudart*.dll" "C:\Users\Zach\Documents\Visual Studio 2012\Projects\Kazaam\Debug\"
+         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin\cudart32_60.dll
+         C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v6.0\bin\cudart64_60.dll
+                 2 file(s) copied.
+     1>Done Building Project "C:\Users\Zach\Documents\Visual Studio 2012\Projects\Kazaam\FFT\FFT\FFT.vcxproj" (Rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.50
+>>>>>>> d23c0838f35e3f9b55a5c024186b8c583eac73fd

@@ -1,7 +1,7 @@
 //
 #include "fft.h"
 //
-vector<string, DataPoint> fingerPrint(long *audio, long sampleLength)
+vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength)
 {
 	//long sampleLength; //Read the length of the sample
 	cudaError_t cudaStatus;
