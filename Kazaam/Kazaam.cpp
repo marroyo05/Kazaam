@@ -2,7 +2,6 @@
 #include <iostream>
 
 #include <string>
-#include <Windows.h>
 
 using namespace std;
 
@@ -10,6 +9,10 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	AudioManager *kazaam = new AudioManager();
+	
+	cout << "Begin." << endl;
+	kazaam->fingerPrintAudio();
+	cout << "End." << endl;
 	
 	system("PAUSE");
 }

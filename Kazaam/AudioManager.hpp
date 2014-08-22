@@ -2,6 +2,7 @@
 
 #include "AudioThread.hpp"
 
+#include <omp.h>
 #include <queue>
 #include <sstream>
 
@@ -18,6 +19,7 @@ class
 		queue<string> listFiles(string folder);
 		int numFiles;
 		vector<DataPoint> matches; 
+		string musicPath;
 
 	public:
 		AudioManager(); //Creates default number of soundbots
@@ -34,19 +36,28 @@ class
 AudioManager::
 	AudioManager()
 {
-	//Create a pool of AudioProcessors
-	pool = new AudioThread[NUM_OBJECTS];
-	//Get Files
-	fileList = listFiles("C:/Users/Zach/Desktop/WaveData/");
-	numFiles = fileList.size();
-	//Assign Files to Processors
-	for (int i = 0; i < numFiles; i++)
+	FILE* data;
+	data = fopen("data.txt", "r");
+	if (data == NULL)
 	{
-		pool[i].setFileName(fileList.front());
-		fileList.pop();
+		musicPath = "C:/Users/Zach/Desktop/WaveData/";
+		//Create a pool of AudioProcessors
+		pool = new AudioThread[NUM_OBJECTS];
+		//Get Files
+		fileList = listFiles(musicPath);
+		numFiles = fileList.size();
+		//Assign Files to Processors
+		for (int i = 0; i < numFiles; i++)
+		{
+			pool[i].setFileName(musicPath + fileList.front());
+			fileList.pop();
+		}
 	}
-	//database = LoadMap();
-	
+	else
+	{
+		fclose(data);
+		database = LoadMap();
+	}
 }
 
 AudioManager::
@@ -63,12 +74,10 @@ AudioManager::
 void AudioManager::
 	fingerPrintAudio()
 {
+	#pragma omp parallel for
 	for (int i = 0; i < numFiles; i++)
 	{
-		/*
-		*Call Analyze and add to the hashmap.
-		*/
-
+		pool[i].readData();
 	}
 
 }
