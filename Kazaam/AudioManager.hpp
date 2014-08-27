@@ -27,6 +27,7 @@ class
 		vector<DataPoint> matches; 
 		string musicPath;
 		bool storing;
+		void loadFileList(string directory);
 
 	public:
 		AudioManager(); //Creates default number of soundbots
@@ -48,18 +49,9 @@ AudioManager::
 	data = fopen("data.txt", "r");
 	if (data == NULL)
 	{
-		musicPath = "C:/Users/Zach/Desktop/WaveData/";
-		//Create a pool of AudioProcessors
-		pool = new AudioThread[NUM_OBJECTS];
-		//Get Files
-		fileList = listFiles(musicPath);
-		numFiles = fileList.size();
-		//Assign Files to Processors
-		for (int i = 0; i < numFiles; i++)
-		{
-			pool[i].setFileName(musicPath + fileList.front());
-			fileList.pop();
-		}
+		storing = true;
+		loadFileList("C:/Users/Zach/Desktop/WaveData/");
+		fingerPrintAudio();
 	}
 	else
 	{
@@ -84,7 +76,6 @@ void AudioManager::
 {
 	if (storing)  //We're adding hashes to our database
 		{
-
 		omp_lock_t lock;
 		omp_init_lock(&lock);
 		#pragma omp parallel for
@@ -265,4 +256,21 @@ int AudioManager::
 void AudioManager::setMode(mode m)
 {
 	storing = m;
+}
+
+void AudioManager::loadFileList(string directory)
+{
+		//musicPath = "C:/Users/Zach/Desktop/WaveData/";
+		musicPath = directory;
+		//Create a pool of AudioProcessors
+		pool = new AudioThread[NUM_OBJECTS];
+		//Get Files
+		fileList = listFiles(musicPath);
+		numFiles = fileList.size();
+		//Assign Files to Processors
+		for (int i = 0; i < numFiles; i++)
+		{
+			pool[i].setFileName(musicPath + fileList.front());
+			fileList.pop();
+		}
 }
