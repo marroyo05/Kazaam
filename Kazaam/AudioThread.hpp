@@ -40,18 +40,17 @@ class
 		FILE *f;
 		string WavFileName;
 		long dataPointer;
-		long fileSize;
+		long numSamples;
 		PoolStage stage;
 
 		int channel0Len, channel1Len;
-		vector<long> channel0;
+		long *channel0;
 		vector<short> channel1;
 
 		bool storing; //true if storing audio, false if recording
 		int readData(); //Fill the channel buffers with data from wav file
 		int writeData(FILE *f); // write out to ???
 		void reset(); // reset back to original state
-
 		
 	public:
 		AudioThread();
@@ -67,8 +66,8 @@ AudioThread::
 {
 	WavFileName = "";
 	dataPointer = 40; // The byte offset where data size is
-	channel0Len = channel0.size();
-	channel1Len = channel1.size();
+	//channel0Len = channel0.size();
+	//channel1Len = channel1.size();
 	stage = waitingForFile;
 	storing = true;
 
@@ -78,7 +77,7 @@ AudioThread::
 	~AudioThread()
 {
 	//Make sure that our buffers are empty
-	channel0.clear();
+	//channel0.clear();
 	channel1.clear();
 }
 
@@ -96,7 +95,6 @@ int AudioThread::
 	//Open the File
 
 	f = fopen(WavFileName.c_str(), "rb");
-	cout << errno << endl;
 		
 	if (f != NULL)
 	{
@@ -111,18 +109,22 @@ int AudioThread::
 		byte d = fgetc(f);
 
 		long size = charToLong(a,b,c,d);
+		numSamples = size / 2;
+
+		channel0 = new long[numSamples];
 
 	   /*The data subchunk is arranged with interleaved channels
 		* [channel0][channel1][channel0][channel1]
 		*  short	 short	   short	 short
 		*/
+		int i = 0;
 		while (dataPointer < size + 40)
 		{
 			a = fgetc(f);
 			b = fgetc(f);
 			c = fgetc(f);
 			d = fgetc(f);
-			channel0.push_back(charToShort(a,b)); //Left channel
+			channel0[i] = charToShort(a,b); //Left channel
 			channel1.push_back(charToShort(c,d)); //Right channel
 			dataPointer += 4; //Skip to the next block
 		}
@@ -148,16 +150,16 @@ void AudioThread::
 	reset()
 {
 	WavFileName = ""; // Clear the file name
-	fileSize = -1; //Reset file size
+	numSamples = -1; //Reset file size
 	stage = waitingForFile; //Reset the stage
 }
 
 void AudioThread::
 	analyze()
 {
-	/*if (storing)
+	if (storing)
 	{
-		fingerPrint(&channel0[0], channel0.size());
-	}*/
+		fingerPrint(channel0, numSamples);
+	}
 }
 
