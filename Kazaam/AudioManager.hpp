@@ -8,6 +8,12 @@
 
 #define NUM_OBJECTS 16 //The number of objects should = simultaneous threads
 
+typedef 
+	enum {
+		RECORDING,
+		STORING
+	} mode;
+
 class 
 	AudioManager
 {
@@ -20,6 +26,7 @@ class
 		int numFiles;
 		vector<DataPoint> matches; 
 		string musicPath;
+		bool storing;
 
 	public:
 		AudioManager(); //Creates default number of soundbots
@@ -31,6 +38,7 @@ class
 		void saveMap(unordered_map<string, DataPoint> um);
 		unordered_map<string, DataPoint>AudioManager::LoadMap();
 		int audioRecord();
+		void setMode( mode m);
 };
 
 AudioManager::
@@ -74,10 +82,41 @@ AudioManager::
 void AudioManager::
 	fingerPrintAudio()
 {
-	#pragma omp parallel for
-	for (int i = 0; i < numFiles; i++)
+	if (storing)  //We're adding hashes to our database
+		{
+
+		omp_lock_t lock;
+		omp_init_lock(&lock);
+		#pragma omp parallel for
+		for (int i = 0; i < numFiles; i++)
+		{
+			vector<pair<string, DataPoint>> hashes;
+			//Load a wav file
+			pool[i].readData();
+			//Convert it to hashes
+			hashes = pool[i].analyze();
+			//Add our hashes to the map
+			omp_set_lock(&lock);
+			for (int i = 0; i < hashes.size(); i++)
+			{
+				database.emplace(hashes[i]);
+			}
+			omp_unset_lock(&lock);
+		}
+	}
+	else //We're recording things
 	{
-		pool[i].readData();
+		//Make an audio thread
+		AudioThread at;
+		//Record a wav file
+		audioRecord();
+		//Load it into an analyzer
+		at.setFileName("temp.wav");
+		//Fingerprint
+		vector<pair<string, DataPoint>> hashes;
+		hashes = at.analyze();
+		//Match
+
 	}
 
 }
@@ -221,4 +260,9 @@ int AudioManager::
 {
 	//Right now this drops a wav file.  It should fingerprint it first.
 	return recordMic();
+}
+
+void AudioManager::setMode(mode m)
+{
+	storing = m;
 }

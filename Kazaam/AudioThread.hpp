@@ -24,13 +24,6 @@ typedef
 		writing
 } PoolStage; 
 
-
-typedef 
-	enum {
-		RECORDING,
-		STORING
-	} mode;
-
 class 
 	AudioThread
 {
@@ -57,8 +50,7 @@ class
 		~AudioThread();
 		int audioRecord();
 		void setFileName(string fname);
-		void setMode(mode m);
-		void analyze(); //FFT and whatnot
+		vector<pair<string, DataPoint>> analyze(); //FFT and whatnot
 };
 
 AudioThread::
@@ -141,11 +133,6 @@ int AudioThread::
 	}
 }
 
-void AudioThread::setMode(mode m)
-{
-	storing = m;
-}
-
 void AudioThread::
 	reset()
 {
@@ -154,12 +141,9 @@ void AudioThread::
 	stage = waitingForFile; //Reset the stage
 }
 
-void AudioThread::
+vector<pair<string, DataPoint>> AudioThread::
 	analyze()
 {
-	if (storing)
-	{
-		fingerPrint(channel0, numSamples);
-	}
+		return fingerPrint(channel0, numSamples);
 }
 

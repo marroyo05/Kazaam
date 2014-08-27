@@ -78,7 +78,7 @@ void SaveToWav(FMOD::Sound *sound)
         #pragma pack()
         #endif
 
-        fp = fopen("record.wav", "wb");
+        fp = fopen("temp.wav", "wb");
        
         /*
             Write out the WAV header.
