@@ -302,10 +302,10 @@ vector<DataPoint> AudioManager::NumMatches(vector<DataPoint> allresults)  //retu
 			{
 				break;
 			}
-			//increment if ID is duplicate
-			else if ( allresults[i].getT() == TotalMatches[j].getT() )
+			//if ID is duplicate increment T 
+			else if ( allresults[i].getID() == TotalMatches[j].getID() )
 			{
-				TotalMatches[j].setID(TotalMatches[j].getID() + 1);
+				TotalMatches[j].setT(TotalMatches[j].getT() + 1);
 				duplicate = true;
 				break;
 			}
@@ -313,7 +313,7 @@ vector<DataPoint> AudioManager::NumMatches(vector<DataPoint> allresults)  //retu
 		if (!duplicate)
 		{
 			//Make new datapoint
-			DataPoint d(allresults[i].getID(), 1);
+			DataPoint d( 1, allresults[i].getID());
 			TotalMatches.push_back(d);
 		}
 	}
