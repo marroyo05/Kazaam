@@ -43,3 +43,28 @@ int main(int argc, char **argv)
 	system("PAUSE");
 }
 
+vector<DataPoint> NumMatches(vector<DataPoint> allresults)
+{
+	vector<DataPoint> TotalMatches;
+	for ( int i = 0; i < allresults.size(); i++)
+	{
+		bool duplicate = false;
+		for (int j = 0; j < TotalMatches.size(); j++)
+		{
+			//increment if ID is duplicate
+			if ( allresults[i].getID() == TotalMatches[j].getID() )
+			{
+				TotalMatches[j].setT(TotalMatches[j].getT() + 1);
+				duplicate = true;
+				break;
+			}
+		}
+		if (!duplicate)
+		{
+			//Make new datapoint
+			TotalMatches.push_back(allresults[i]);
+		}
+	}
+
+	return TotalMatches;
+}
