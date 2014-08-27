@@ -242,7 +242,7 @@ c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\host_defines.h
 c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\vector_functions.h
 c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\device_launch_parameters.h
 c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\vector_types.h
-c:\users\mikey\documents\github\kazaam\fft\fft\fft.h
+c:\users\zach\documents\visual studio 2012\projects\kazaam\fft\fft\fft.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\include\cuda_runtime.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\include\device_launch_parameters.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v5.5\include\cufft.h
@@ -253,7 +253,7 @@ c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\cuComplex.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\math.h
 c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\vector_types.h
 c:\program files\nvidia gpu computing toolkit\cuda\v5.5\include\driver_types.h
-c:\users\mikey\documents\github\kazaam\fft\fft\DataPoint.h
+c:\users\zach\documents\visual studio 2012\projects\kazaam\fft\fft\DataPoint.h
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\string
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\iterator
 C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\include\istream

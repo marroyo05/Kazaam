@@ -7,7 +7,6 @@ vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength)
 	cudaError_t cudaStatus;
 
 	//Load wav file into memory
-	//long *audio = readData(&sampleLength);
 	int numChunks = sampleLength / CHUNK_SIZE;
 
 	//Host memory

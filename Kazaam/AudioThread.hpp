@@ -24,6 +24,13 @@ typedef
 		writing
 } PoolStage; 
 
+
+typedef 
+	enum {
+		RECORDING,
+		STORING
+	} mode;
+
 class 
 	AudioThread
 {
@@ -40,7 +47,7 @@ class
 		vector<long> channel0;
 		vector<short> channel1;
 
-		
+		bool storing; //true if storing audio, false if recording
 		int readData(); //Fill the channel buffers with data from wav file
 		int writeData(FILE *f); // write out to ???
 		void reset(); // reset back to original state
@@ -51,7 +58,7 @@ class
 		~AudioThread();
 		int audioRecord();
 		void setFileName(string fname);
-		
+		void setMode(mode m);
 		void analyze(); //FFT and whatnot
 };
 
@@ -63,6 +70,7 @@ AudioThread::
 	channel0Len = channel0.size();
 	channel1Len = channel1.size();
 	stage = waitingForFile;
+	storing = true;
 
 }
 
@@ -131,6 +139,11 @@ int AudioThread::
 	}
 }
 
+void AudioThread::setMode(mode m)
+{
+	storing = m;
+}
+
 void AudioThread::
 	reset()
 {
@@ -142,6 +155,9 @@ void AudioThread::
 void AudioThread::
 	analyze()
 {
-
+	/*if (storing)
+	{
+		fingerPrint(&channel0[0], channel0.size());
+	}*/
 }
 
