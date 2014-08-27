@@ -64,7 +64,7 @@ AudioThread::
 	//channel1Len = channel1.size();
 	stage = waitingForFile;
 	storing = true;
-
+	numSamples = 44100 * 20;
 }
 
 AudioThread::

@@ -15,6 +15,11 @@ class DataPoint
 		void setID(int id);
 		void setT(int time);
 		string toString();
+		friend bool operator<(DataPoint &a, DataPoint &b)
+		{
+			//We sort backwards so the biggest match is up front
+			return a.getID() > b.getID();
+		}
 
 	private:
 		string hash;

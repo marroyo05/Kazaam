@@ -8,8 +8,10 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	AudioManager *kazaam = new AudioManager();
-	
+	cout << "Loading...This may take a while..." << endl;
+	AudioManager kazaam;
+	cout << "\a" << endl;
+	system("CLS");
 	cout << "===================" << endl;
 	cout << "|     KAZAAM      |" << endl;
 	cout << "===================" << endl;
@@ -30,41 +32,20 @@ int main(int argc, char **argv)
 		switch(choice)
 		{
 			case 1:
-				kazaam->setMode(STORING);
+				kazaam.setMode(STORING);
+				kazaam.fingerPrintAudio();
+				break;
 			case 2:
-				kazaam->setMode(RECORDING);
+				kazaam.setMode(RECORDING);
+				kazaam.fingerPrintAudio();
+				break;
 			case 3:
 				endLoop = true;
+				break;
 			default:
 				cout << "Please enter a valid choice." << endl;
 		}
 	}
 
 	system("PAUSE");
-}
-
-vector<DataPoint> NumMatches(vector<DataPoint> allresults)  //returns list of matches with count of song occurrences
-{
-	vector<DataPoint> TotalMatches;
-	for ( int i = 0; i < allresults.size(); i++)
-	{
-		bool duplicate = false;
-		for (int j = 0; j < TotalMatches.size(); j++)
-		{
-			//increment if ID is duplicate
-			if ( allresults[i].getID() == TotalMatches[j].getID() )
-			{
-				TotalMatches[j].setT(TotalMatches[j].getT() + 1);
-				duplicate = true;
-				break;
-			}
-		}
-		if (!duplicate)
-		{
-			//Make new datapoint
-			TotalMatches.push_back(allresults[i]);
-		}
-	}
-
-	return TotalMatches;
 }

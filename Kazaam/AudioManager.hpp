@@ -38,7 +38,8 @@ class
 		void fingerPrintAudio();
 		void saveMap(unordered_map<string, DataPoint> um);
 		unordered_map<string, DataPoint>AudioManager::LoadMap();
-		vector<DataPoint> Match(vector<string>);
+		vector<DataPoint> Match(vector<pair<string,DataPoint>> hashes);
+		vector<DataPoint> NumMatches(vector<DataPoint> allresults);
 		int audioRecord();
 		void setMode( mode m);
 };
@@ -77,23 +78,19 @@ void AudioManager::
 {
 	if (storing)  //We're adding hashes to our database
 		{
-		omp_lock_t lock;
-		omp_init_lock(&lock);
-		#pragma omp parallel for
 		for (int i = 0; i < numFiles; i++)
 		{
 			vector<pair<string, DataPoint>> hashes;
 			//Load a wav file
 			pool[i].readData();
+			pool[i].setSongID(i);
 			//Convert it to hashes
 			hashes = pool[i].analyze();
 			//Add our hashes to the map
-			omp_set_lock(&lock);
 			for (int i = 0; i < hashes.size(); i++)
 			{
 				database.emplace(hashes[i]);
 			}
-			omp_unset_lock(&lock);
 		}
 	}
 	else //We're recording things
@@ -106,9 +103,14 @@ void AudioManager::
 		at.setFileName("temp.wav");
 		//Fingerprint
 		vector<pair<string, DataPoint>> hashes;
+		vector<DataPoint> results;
 		hashes = at.analyze();
 		//Match
-
+		results = Match(hashes);
+		//Group by number of results
+		results = NumMatches(results);
+		sort(results.begin(), results.end());
+		cout << "The match is probably " << results[0].getID() << endl;
 	}
 
 }
@@ -184,7 +186,6 @@ unordered_map<string, DataPoint>AudioManager::
 			um.insert(make_pair(hash,d));
 		}
 		myFile.close();	
-		cout << "File was opened";
 	}
 	else cout << "Unable to open file";
  
@@ -201,7 +202,7 @@ void AudioManager::
 		for (auto itr = um.begin(); itr != um.end(); ++itr)
 		{
 				//write to file
-			//file << itr->first<< " " << itr->second. << endl;
+			file << itr->first<< " " << itr->second.toString() << endl;
 		}
 		file.close();
 	}
@@ -251,7 +252,7 @@ int AudioManager::
 	audioRecord()
 {
 	//Right now this drops a wav file.  It should fingerprint it first.
-	return recordMic();
+	return recordMic(20);
 }
 
 void AudioManager::setMode(mode m)
@@ -276,14 +277,39 @@ void AudioManager::loadFileList(string directory)
 		}
 }
 
-vector<DataPoint> AudioManager:: Match(vector<string> Hashes)
+vector<DataPoint> AudioManager::Match(vector<pair<string,DataPoint>> Hashes)
 {
 	vector<DataPoint> Matches;
 
 	for ( int i = 0; i < Hashes.size(); i++)
 	{
-		Matches.push_back(query(Hashes[1]));
+		Matches.push_back(query(Hashes[i].first));
 	}
 	return Matches;
 }
 
+vector<DataPoint> AudioManager::NumMatches(vector<DataPoint> allresults)  //returns list of matches with count of song occurrences
+{
+	vector<DataPoint> TotalMatches;
+	for ( int i = 0; i < allresults.size(); i++)
+	{
+		bool duplicate = false;
+		for (int j = 0; j < TotalMatches.size(); j++)
+		{
+			//increment if ID is duplicate
+			if ( allresults[i].getID() == TotalMatches[j].getID() )
+			{
+				TotalMatches[j].setT(TotalMatches[j].getT() + 1);
+				duplicate = true;
+				break;
+			}
+		}
+		if (!duplicate)
+		{
+			//Make new datapoint
+			TotalMatches.push_back(allresults[i]);
+		}
+	}
+
+	return TotalMatches;
+}
