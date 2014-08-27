@@ -44,6 +44,7 @@ class
 		int readData(); //Fill the channel buffers with data from wav file
 		int writeData(FILE *f); // write out to ???
 		void reset(); // reset back to original state
+		int songID;
 		
 	public:
 		AudioThread();
@@ -51,6 +52,7 @@ class
 		int audioRecord();
 		void setFileName(string fname);
 		vector<pair<string, DataPoint>> analyze(); //FFT and whatnot
+		void setSongID(int id);
 };
 
 AudioThread::
@@ -102,7 +104,7 @@ int AudioThread::
 
 		long size = charToLong(a,b,c,d);
 		numSamples = size / 2;
-
+		
 		channel0 = new long[numSamples];
 
 	   /*The data subchunk is arranged with interleaved channels
@@ -119,6 +121,7 @@ int AudioThread::
 			channel0[i] = charToShort(a,b); //Left channel
 			channel1.push_back(charToShort(c,d)); //Right channel
 			dataPointer += 4; //Skip to the next block
+			i++;
 		}
 
 		fclose(f);
@@ -136,14 +139,17 @@ int AudioThread::
 void AudioThread::
 	reset()
 {
-	WavFileName = ""; // Clear the file name
-	numSamples = -1; //Reset file size
-	stage = waitingForFile; //Reset the stage
 }
 
 vector<pair<string, DataPoint>> AudioThread::
 	analyze()
 {
-		return fingerPrint(channel0, numSamples);
+		vector<pair<string, DataPoint>> result = fingerPrint(channel0, numSamples, songID);
+		delete channel0;
+		return result;
 }
 
+void AudioThread::setSongID(int id)
+{
+	songID = id;
+}

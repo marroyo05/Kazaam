@@ -1,7 +1,7 @@
 //
 #include "fft.h"
 //
-vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength)
+vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength, int songID)
 {
 	//long sampleLength; //Read the length of the sample
 	cudaError_t cudaStatus;
@@ -26,6 +26,7 @@ vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength)
 		wavData[times] = complex;
 	}
 
+	//CUDA variables
 	cufftComplex *d_wavData;
 	cufftComplex *d_fftData;
 
@@ -61,13 +62,18 @@ vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength)
 		}
 	}
 	
+	//Done with wavData
+	for (int i = 0; i < numChunks; i++)
+	{
+		delete wavData[i];
+	}
 	delete wavData;
+
+
 	cudaFree(d_wavData);
 	cudaFree(d_fftData);
 	cufftDestroy(plan);
 	cudaDeviceReset();
-
-	cout << "FFT Complete." << endl;
 
 	//Create an array of hash points
 	double **highScores = new double * [numChunks];
@@ -86,19 +92,23 @@ vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength)
 	{
 		for (int freq = LOWER_LIMIT; freq < UPPER_LIMIT - 1; freq ++)
 		{
-			double magnitude = log(abs(fftData[t][freq].x)) + 1;
+			double magnitude = log(abs(fftData[t][freq].x)) + 1; //Logarithmic scaling
 
 			int index = getIndex(freq);
 
-			if (magnitude > highScores[t][index])
+			if (magnitude > highScores[t][index]) //Reduce to find only the peaks in each range.
 			{
 				highScores[t][index] = magnitude;
 			}
 		}
 	}
-	cout << "Reduction Complete." << endl;
 	
-
+	//We're done with fftData
+	for (int i = 0; i < numChunks; i++)
+	{
+		delete fftData[i];
+	}
+	delete fftData;
 
 	//Store the matches
 	vector<pair<string, DataPoint>> storage;
@@ -111,13 +121,16 @@ vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength)
 			//concat our hash with a fuzziness
 			hash += to_string((highScores[t][j] - ((int)highScores[t][j] % fuzz)));
 		}
-		DataPoint d(t, 0); //Create a data poin
+		DataPoint d(t, songID); //Create a data poin
 		pair<string, DataPoint> point (hash, d); //Pair it with the hash we calculated
 		storage.push_back(point);
 	}
 
-	//Housekeeping
-	delete fftData;
+	//Done with Highscores
+	for (int i = 0; i < numChunks; i++)
+	{
+		delete highScores[i];
+	}
 	delete highScores;
 
 	return storage;
@@ -158,7 +171,6 @@ unordered_map<string, DataPoint> ToMap(vector<pair<string,DataPoint>> data)
 	unordered_map<string,DataPoint> storage;
 	for (int t = 0; t < data.size(); t++)
 	{
-		
 		storage.insert(data[t]);
 	}
 	return storage;

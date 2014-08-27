@@ -18,7 +18,7 @@
 
 using namespace std;
 
-vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength);
+vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength, int songID);
 long* readData(long* sampleLength);
 long powerOfTwo(long input);
 int getIndex(int freq);

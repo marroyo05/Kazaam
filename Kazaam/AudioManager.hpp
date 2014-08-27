@@ -40,6 +40,7 @@ class
 		unordered_map<string, DataPoint>AudioManager::LoadMap();
 		int audioRecord();
 		void setMode( mode m);
+		int getNumFiles();
 };
 
 AudioManager::
@@ -76,23 +77,20 @@ void AudioManager::
 {
 	if (storing)  //We're adding hashes to our database
 		{
-		omp_lock_t lock;
-		omp_init_lock(&lock);
-		#pragma omp parallel for
+
 		for (int i = 0; i < numFiles; i++)
 		{
 			vector<pair<string, DataPoint>> hashes;
 			//Load a wav file
 			pool[i].readData();
+			pool[i].setSongID(i);
 			//Convert it to hashes
 			hashes = pool[i].analyze();
 			//Add our hashes to the map
-			omp_set_lock(&lock);
 			for (int i = 0; i < hashes.size(); i++)
 			{
-				database.emplace(hashes[i]);
+				database.insert(hashes[i]);
 			}
-			omp_unset_lock(&lock);
 		}
 	}
 	else //We're recording things
@@ -200,7 +198,7 @@ void AudioManager::
 		for (auto itr = um.begin(); itr != um.end(); ++itr)
 		{
 				//write to file
-			//file << itr->first<< " " << itr->second. << endl;
+			file << itr->first << " " << itr->second.toString() << endl;
 		}
 		file.close();
 	}
@@ -250,7 +248,7 @@ int AudioManager::
 	audioRecord()
 {
 	//Right now this drops a wav file.  It should fingerprint it first.
-	return recordMic();
+	return recordMic(20);
 }
 
 void AudioManager::setMode(mode m)
@@ -273,4 +271,9 @@ void AudioManager::loadFileList(string directory)
 			pool[i].setFileName(musicPath + fileList.front());
 			fileList.pop();
 		}
+}
+
+int AudioManager::getNumFiles()
+{
+	return numFiles;
 }

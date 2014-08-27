@@ -8,16 +8,19 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	AudioManager *kazaam = new AudioManager();
-	
+	cout << "Loading...This may take a while..." << endl;
+	AudioManager kazaam;
+	system("CLS");
 	cout << "===================" << endl;
 	cout << "|     KAZAAM      |" << endl;
 	cout << "===================" << endl;
 
+	cout << kazaam.getNumFiles() << " songs loaded." << endl;
+
 	int choice;
 
 	bool endLoop = false;
-
+	
 	while (!endLoop)
 	{
 
@@ -30,13 +33,17 @@ int main(int argc, char **argv)
 		switch(choice)
 		{
 			case 1:
-				kazaam->setMode(STORING);
+				kazaam.setMode(STORING);
+				break;
 			case 2:
-				kazaam->setMode(RECORDING);
+				kazaam.setMode(RECORDING);
+				break;
 			case 3:
 				endLoop = true;
+				break;
 			default:
 				cout << "Please enter a valid choice." << endl;
+				break;
 		}
 	}
 

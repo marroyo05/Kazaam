@@ -106,7 +106,7 @@ void SaveToWav(FMOD::Sound *sound)
     }
 }
 
-int recordMic()
+int recordMic(int numSecs)
 {
 	FMOD::System *sys = 0;
 	FMOD::Sound *sound = 0;
@@ -145,7 +145,7 @@ int recordMic()
 	exinfo.numchannels = 1;
 	exinfo.format = FMOD_SOUND_FORMAT_PCM16;
 	exinfo.defaultfrequency = 44100;
-	exinfo.length = exinfo.defaultfrequency * sizeof(short) * exinfo.numchannels * 5;
+	exinfo.length = exinfo.defaultfrequency * sizeof(short) * exinfo.numchannels * numSecs;
 
 	result = sys->createSound(0, FMOD_2D | FMOD_SOFTWARE | FMOD_OPENUSER, &exinfo, &sound);
 	ERRCHECK(result);

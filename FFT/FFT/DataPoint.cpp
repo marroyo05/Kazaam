@@ -55,7 +55,6 @@ void DataPoint::
 string DataPoint::
 	toString()
 {
- 
 	return to_string(songId) + " " + to_string(t);
 }
 

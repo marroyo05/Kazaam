@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kazaam", "Kazaam\Kazaam.vcxproj", "{2B0C9BDD-62C4-4BB2-B91D-55B055AFBE1E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FFT", "FFT\FFT\FFT.vcxproj", "{1058487E-601F-4768-9CE0-1400B16E4A43}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ReadWAV", "ReadWAV\ReadWAV\ReadWAV.vcxproj", "{5C465FE6-B662-4D21-A1CB-1548CB962F85}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -23,20 +19,6 @@ Global
 		{2B0C9BDD-62C4-4BB2-B91D-55B055AFBE1E}.Release|Win32.Build.0 = Release|Win32
 		{2B0C9BDD-62C4-4BB2-B91D-55B055AFBE1E}.Release|x64.ActiveCfg = Release|x64
 		{2B0C9BDD-62C4-4BB2-B91D-55B055AFBE1E}.Release|x64.Build.0 = Release|x64
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Debug|Win32.Build.0 = Debug|Win32
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Debug|x64.ActiveCfg = Debug|x64
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Debug|x64.Build.0 = Debug|x64
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Release|Win32.ActiveCfg = Release|Win32
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Release|Win32.Build.0 = Release|Win32
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Release|x64.ActiveCfg = Release|x64
-		{1058487E-601F-4768-9CE0-1400B16E4A43}.Release|x64.Build.0 = Release|x64
-		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Debug|Win32.ActiveCfg = Debug|Win32
-		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Debug|Win32.Build.0 = Debug|Win32
-		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Debug|x64.ActiveCfg = Debug|Win32
-		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Release|Win32.ActiveCfg = Release|Win32
-		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Release|Win32.Build.0 = Release|Win32
-		{5C465FE6-B662-4D21-A1CB-1548CB962F85}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
