@@ -101,6 +101,7 @@ void AudioManager::
 		audioRecord();
 		//Load it into an analyzer
 		at.setFileName("temp.wav");
+		at.readData();
 		//Fingerprint
 		vector<pair<string, DataPoint>> hashes;
 		vector<DataPoint> results;
@@ -110,7 +111,7 @@ void AudioManager::
 		//Group by number of results
 		results = NumMatches(results);
 		sort(results.begin(), results.end());
-		cout << "The match is probably " << results[0].getID() << endl;
+		cout << "The match is probably " << results[0].getT() << endl;
 	}
 
 }
@@ -296,10 +297,15 @@ vector<DataPoint> AudioManager::NumMatches(vector<DataPoint> allresults)  //retu
 		bool duplicate = false;
 		for (int j = 0; j < TotalMatches.size(); j++)
 		{
-			//increment if ID is duplicate
-			if ( allresults[i].getID() == TotalMatches[j].getID() )
+			//Strip out our invalid results.
+			if (allresults[i].getID() == -1)
 			{
-				TotalMatches[j].setT(TotalMatches[j].getT() + 1);
+				break;
+			}
+			//increment if ID is duplicate
+			else if ( allresults[i].getT() == TotalMatches[j].getT() )
+			{
+				TotalMatches[j].setID(TotalMatches[j].getID() + 1);
 				duplicate = true;
 				break;
 			}
@@ -307,7 +313,8 @@ vector<DataPoint> AudioManager::NumMatches(vector<DataPoint> allresults)  //retu
 		if (!duplicate)
 		{
 			//Make new datapoint
-			TotalMatches.push_back(allresults[i]);
+			DataPoint d(allresults[i].getID(), 1);
+			TotalMatches.push_back(d);
 		}
 	}
 

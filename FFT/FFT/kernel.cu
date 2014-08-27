@@ -3,6 +3,7 @@
 //
 vector<pair<string, DataPoint>> fingerPrint(long *audio, long sampleLength, int songID)
 {
+	
 	//long sampleLength; //Read the length of the sample
 	cudaError_t cudaStatus;
 

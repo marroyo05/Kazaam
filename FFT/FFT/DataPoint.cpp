@@ -1,4 +1,5 @@
 #include "DataPoint.h"
+#include <iostream>
 
 DataPoint::
 	DataPoint(){};
@@ -7,7 +8,7 @@ DataPoint::
 	DataPoint(int time, int id)
 {
 	t = time;
-	songId = songId;
+	songId = id;
 };
 
 DataPoint::
@@ -50,7 +51,6 @@ void DataPoint::
 {
 	t = time;
 }
-
 
 string DataPoint::
 	toString()

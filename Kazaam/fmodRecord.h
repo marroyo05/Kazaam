@@ -156,8 +156,6 @@ int recordMic(int numSecs)
 	unsigned int recordpos = 0;
 	unsigned int playpos = 0;
 	unsigned int length;
-	cout << "Press enter to start" << endl;
-	system("PAUSE > NUL");
 	result = sys->recordStart(recorddriver, sound, looping);
 	ERRCHECK(result);
 	cout << "Press enter to stop" << endl;
